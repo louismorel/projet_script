@@ -1,15 +1,16 @@
 var cs = document.getElementById("cv");
 var ctx = cs.getContext("2d");
-
+var x = 0;
+var y = 0;
 var direction = {
-"ArrowRight": 105,
-"ArrowLeft": 297,
+"ArrowRight": 110,
+"ArrowLeft": 302,
 "ArrowUp": 5,
-"ArrowDown": 200
+"ArrowDown": 205
 };
 var sy = direction["ArrowDown"];
 var drawPereNoel = function () {
-	ctx.drawImage(pereNoel, 0, sy, 70, 100, 0, 0, 70, 100);
+	ctx.drawImage(pereNoel, 0, sy, 70, 100, x, y, 70, 100);
 };
 
 var drawFond = function(){
@@ -26,6 +27,14 @@ document.onkeydown = function (e) {
 		return;
 	}
 	sy = direction[e.key];
+	if(e.key==="ArrowDown")
+		y+=5;
+	else if(e.key==="ArrowUp")
+		y-=5;
+	else if(e.key==="ArrowLeft")
+		x-=5;
+	else if(e.key==="ArrowRight")
+		x+=5;
 	ctx.clearRect(0, 0, 800, 600);
 	drawFond();
 	drawPereNoel();
