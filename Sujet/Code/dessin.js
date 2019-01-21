@@ -298,32 +298,32 @@ let changeStop = function(){
 };
 
 let fond  = new Image();
-fond.src = "../Images/neige.jpg";
+fond.src = "../ressources/neige.jpg";
 fond.onload = draw;
 
 let pereNoel = new Image();
 pereNoel.src = "../ressources/santa.png";
 
 let sapin = new Image();
-sapin.src = "../Images/sapin.png";
+sapin.src = "../ressources/sapin.png";
 
 let sapinGift = new Image();
-sapinGift.src = "../Images/sapin_gift.png";
+sapinGift.src = "../ressources/sapin_gift.png";
 
 let sapinDecore = new Image();
-sapinDecore.src = "../Images/sapin_decore.png";
+sapinDecore.src = "../ressources/sapin_decore.png";
 
 let sapinDecoreGift = new Image();
-sapinDecoreGift.src = "../Images/sapin_decore_gift.png";
+sapinDecoreGift.src = "../ressources/sapin_decore_gift.png";
 
 let elfIm = new Image();
 elfIm.src = "../ressources/lutin.png";
 
 let ballIm = new Image();
-ballIm.src = "../Images/ball.png";
+ballIm.src = "../ressources/ball.png";
 
 let menu = new Image();
-menu.src = "../Images/menu.png";
+menu.src = "../ressources/menu.png";
 
 document.onkeydown = function (e) {
 	if(!gameStopped){
