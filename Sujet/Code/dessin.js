@@ -1,9 +1,14 @@
 let cs = document.getElementById("cv");
 let ctx = cs.getContext("2d");
 
-var timeLeft = 3;
+var timeLeft = 190;
+
+let gameStopped = false;
 
 let lastHit = new Date();
+
+let isStopped = false;
+let lastStop;
 
 let backgroundMusic = new Audio("Silent-night.mp3");
 backgroundMusic.volume = 0.2;
@@ -13,22 +18,43 @@ let elfLaugh = new Audio("sf-laugh-elf-creature-01.mp3");
 elfLaugh.volume = 1;
 let loose = new Audio("SoundOfSilence.mp3");
 loose.volume = 0.8;
+let grelot = new Audio("grelot.mp3");
+grelot.volume = 1;
 
 let playBackGroundMusic = function(){
-	backgroundMusic.play();
+	if(!gameStopped)
+		backgroundMusic.play();
+};
+let stopBackGroundMusic = function(){
+	backgroundMusic.volume = 0;
 };
 
 let playHohoho = function(){
 	hohoho.play();
 };
+let stopHohoho = function(){
+	hohoho.volume = 0;
+};
+
 
 let playElfLaugh = function(){
 	elfLaugh.play();
 };
+let stopElfLaugh = function(){
+	elfLaugh.volume = 0;
+};
+
 
 let playLooseMusic = function(){
 	loose.play();
-}
+};
+
+let playGrelot = function(){
+	grelot.play();
+};
+let stopGrelot = function(){
+	grelot.volume = 0;
+};
 
 let direction = {
 	"ArrowRight": 110,
@@ -42,10 +68,13 @@ let santa = new PereNoel();
 
 let listTree = new Array();
 let listElf = new Array();
+let listBall = new Array();
 
 let decreaseTime = function(){
-	timeLeft-=1;
-	console.log(timeLeft);
+	if(!gameStopped){
+		timeLeft-=1;
+		console.log(timeLeft);
+	}
 };
 
 let walkSanta = function () {
@@ -56,36 +85,38 @@ let walkSanta = function () {
 };
 
 let walkElf =function(){
-	for(let i=0 ; i<listElf.length ; i++){
-		if(listElf[i].getTime()>3000){
-			let directionXY = Math.round(Math.random());
-			let directionPlusMinus = Math.round(Math.random());
-			listElf[i].changeDirection(directionXY, directionPlusMinus);
-			listElf[i].changeTime()
-		}
-		else{
-			if(listElf[i].directionXY===0){
-				if(listElf[i].directionPlusMinus===0)
-					listElf[i].x += 3;
-				else
-					listElf[i].x -= 3;
+	if(!isStopped){
+		for(let i=0 ; i<listElf.length ; i++){
+			if(listElf[i].getTime()>3000){
+				let directionXY = Math.round(Math.random());
+				let directionPlusMinus = Math.round(Math.random());
+				listElf[i].changeDirection(directionXY, directionPlusMinus);
+				listElf[i].changeTime()
 			}
 			else{
-				if(listElf[i].directionPlusMinus===0)
-					listElf[i].y += 3;
-				else
-					listElf[i].y -= 3;
-			}	
+				if(listElf[i].directionXY===0){
+					if(listElf[i].directionPlusMinus===0)
+						listElf[i].x += 3;
+					else
+						listElf[i].x -= 3;
+				}
+				else{
+					if(listElf[i].directionPlusMinus===0)
+						listElf[i].y += 3;
+					else
+						listElf[i].y -= 3;
+				}	
+			}
+			if(listElf[i].x > 775){
+				listElf[i].x = 0;
+			}else if(listElf[i].x < 0){
+				listElf[i].x = 775;
+			}else if(listElf[i].y > 570){
+				listElf[i].y = 0;
+			}else if(listElf[i].y < 0){
+				listElf[i].y = 570;
+			}		
 		}
-		if(listElf[i].x > 775){
-			listElf[i].x = 0;
-		}else if(listElf[i].x < 0){
-			listElf[i].x = 775;
-		}else if(listElf[i].y > 570){
-			listElf[i].y = 0;
-		}else if(listElf[i].y < 0){
-			listElf[i].y = 570;
-		}		
 	}
 };
 
@@ -133,11 +164,39 @@ let drawElf = function(){
 	}
 };
 
+let drawBall = function(){
+	if(listBall.length>0){
+		for(let i = 0; i<listBall.length ; i++)
+			ctx.drawImage(ballIm, 0, 0, 41, 50, listBall[i].x, listBall[i].y, 41, 50);
+	}
+};
+
+let drawMenu = function(){
+	ctx.drawImage(menu, 0, 0, 800, 100, 0, 550, 800, 100);
+};
+
+let write = function(){
+	ctx.font = "30px Verdana";
+	ctx.fillStyle = "#FFFFFF";
+	let min = Math.floor(timeLeft/60);
+	let sec = (timeLeft - min*60);
+	if(sec<10)
+		sec = "0"+sec;
+	ctx.fillText(min+":"+sec, 55, 585);
+	ctx.fillText(santa.money, 385, 585);
+	ctx.fillText(santa.gift, 713, 585);
+};
+
 let draw = function(){
-	drawFond();
-	drawTree();
-	drawElf();
-	drawSanta();
+	if(!gameStopped){
+		drawFond();
+		drawTree();
+		drawElf();
+		drawBall();
+		drawSanta();
+		drawMenu();
+		write();
+	}
 };
 
 let createTree = function(){
@@ -169,16 +228,35 @@ let createElfs = function(tree){
 	
 };
 
+let createBall = function(){
+	if(timeLeft===120 || timeLeft===50){
+		let ball = new Ball(Math.floor((Math.random()*740)),Math.floor((Math.random()*520)));
+		listBall.push(ball);
+	}
+};
+
+let deleteBall = function(x, y){
+	for(let i = 0; i<listBall.length;i++){	
+		if(listBall[i].x===x && listBall[i].y === y){
+			listBall.splice(i,1);
+		}
+	}
+};
+
+let create = function(){
+	createTree();
+	createBall();
+};
+
 let hitTree = function(){
 	for(let i = 0; i<listTree.length ; i++){
 		if(((santa.x + 55 >= listTree[i].x) && (santa.y + 80 >= listTree[i].y)) && ((santa.x <= listTree[i].x + 45) && (santa.y <= listTree[i].y + 60))){
 			if(!listTree[i].isDone){
 				playHohoho();
 				createElfs(listTree[i]);
-			}
-			listTree[i].found();
-			santa.dropGifts(listTree[i]);
-			
+				listTree[i].found();
+				santa.dropGifts(listTree[i]);
+			}			
 		}
 	}
 };
@@ -194,6 +272,29 @@ let hitElf = function(){
 			}			
 		}
 	}
+};
+
+let hitBall = function(){
+	for(let i = 0; i<listBall.length ; i++){
+		if(((santa.x + 45 >= listBall[i].x) && (santa.y + 75 >= listBall[i].y)) && ((santa.x <= listBall[i].x + 40) && (santa.y <= listBall[i].y + 40))){
+			listBall[i].found();
+			playGrelot();
+			deleteBall(listBall[i].x, listBall[i].y);
+			isStopped = true;
+			lastStop = timeLeft;
+		}
+	}
+};
+
+let hit = function(){
+	hitTree();
+	hitElf();
+	hitBall();
+};
+
+let changeStop = function(){
+	if(isStopped===true && lastStop!=null && Math.abs(lastStop-timeLeft>=15))
+		isStopped=false;
 };
 
 let fond  = new Image();
@@ -218,38 +319,70 @@ sapinDecoreGift.src = "../Images/sapin_decore_gift.png";
 let elfIm = new Image();
 elfIm.src = "../ressources/lutin.png";
 
+let ballIm = new Image();
+ballIm.src = "../Images/ball.png";
+
+let menu = new Image();
+menu.src = "../Images/menu.png";
+
 document.onkeydown = function (e) {
-	if (direction[e.key] === undefined) {
-		return;
+	if(!gameStopped){
+		if (direction[e.key] === undefined) {
+			return;
+		}
+		sySanta = direction[e.key];
+		if(e.key==="ArrowDown")
+			santa.y+=5;
+		else if(e.key==="ArrowUp")
+			santa.y-=5;
+		else if(e.key==="ArrowLeft")
+			santa.x-=5;
+		else if(e.key==="ArrowRight")
+			santa.x+=5;
+		if(santa.x>780)
+			santa.x=0;
+		else if(santa.x<0)
+			santa.x=780;
+		if(santa.y>580)
+			santa.y=0;
+		else if(santa.y<0)
+			santa.y=580;
+		walkSanta();
+		ctx.clearRect(0, 0, 800, 600);
+		draw();
 	}
-	sySanta = direction[e.key];
-	if(e.key==="ArrowDown")
-		santa.y+=5;
-	else if(e.key==="ArrowUp")
-		santa.y-=5;
-	else if(e.key==="ArrowLeft")
-		santa.x-=5;
-	else if(e.key==="ArrowRight")
-		santa.x+=5;
-	if(santa.x>780)
-		santa.x=0;
-	else if(santa.x<0)
-		santa.x=780;
-	if(santa.y>580)
-		santa.y=0;
-	else if(santa.y<0)
-		santa.y=580;
-	walkSanta();
-	ctx.clearRect(0, 0, 800, 600);
-	draw();
 };
 
+let winGame = function(){
+	if(timeLeft>0 && santa.gift<=0 && santa.money>0 && !gameStopped){
+		gameStopped = true;
+		stopHohoho();
+		stopElfLaugh();
+		stopGrelot();
+		alert("You won with "+santa.money+" euros !");
+	}
+};
+
+let stopGame = function(){
+	if(timeLeft===0 || santa.money===0){
+		gameStopped = true;
+		stopBackGroundMusic();
+		stopHohoho();
+		stopElfLaugh();
+		stopGrelot();
+		playLooseMusic();
+		alert("You loose with "+santa.gift+" gifts left...");
+	}
+};
 setInterval(decreaseTime,1000);
-setInterval(playBackGroundMusic,1);
+setInterval(playBackGroundMusic,500);
 setInterval(deleteTree,500);
-setInterval(createTree,10000);
+setInterval(create,10000);
 setInterval(walkElf, 250);
 setInterval(draw,500);
-setInterval(hitTree,100);
-setInterval(hitElf,200);
+setInterval(hit,250);
+setInterval(changeStop,1000);
+setInterval(winGame,500);
+setInterval(stopGame,1000);
+
 
