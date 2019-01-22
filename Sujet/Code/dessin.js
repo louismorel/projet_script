@@ -1,7 +1,7 @@
 let cs = document.getElementById("cv");
 let ctx = cs.getContext("2d");
 
-var timeLeft = 190;
+var timeLeft = 210;
 
 let gameStopped = false;
 
@@ -20,6 +20,8 @@ let loose = new Audio("SoundOfSilence.mp3");
 loose.volume = 0.8;
 let grelot = new Audio("grelot.mp3");
 grelot.volume = 1;
+let victoryMusic = new Audio("victoryMusic.mp3");
+victoryMusic.volume = 0.7;
 
 let playBackGroundMusic = function(){
 	if(!gameStopped)
@@ -56,6 +58,10 @@ let stopGrelot = function(){
 	grelot.volume = 0;
 };
 
+let playVictoryMusic = function(){
+	victoryMusic.play();
+};
+
 let direction = {
 	"ArrowRight": 110,
 	"ArrowLeft": 302,
@@ -73,7 +79,6 @@ let listBall = new Array();
 let decreaseTime = function(){
 	if(!gameStopped){
 		timeLeft-=1;
-		console.log(timeLeft);
 	}
 };
 
@@ -85,6 +90,9 @@ let walkSanta = function () {
 };
 
 let walkElf =function(){
+	let speed = 1;
+	if(timeLeft<=20)
+		speed = 2;
 	if(!isStopped){
 		for(let i=0 ; i<listElf.length ; i++){
 			if(listElf[i].getTime()>3000){
@@ -96,15 +104,15 @@ let walkElf =function(){
 			else{
 				if(listElf[i].directionXY===0){
 					if(listElf[i].directionPlusMinus===0)
-						listElf[i].x += 3;
+						listElf[i].x += 3*speed;
 					else
-						listElf[i].x -= 3;
+						listElf[i].x -= 3*speed;
 				}
 				else{
 					if(listElf[i].directionPlusMinus===0)
-						listElf[i].y += 3;
+						listElf[i].y += 3*speed;
 					else
-						listElf[i].y -= 3;
+						listElf[i].y -= 3*speed;
 				}	
 			}
 			if(listElf[i].x > 775){
@@ -229,7 +237,7 @@ let createElfs = function(tree){
 };
 
 let createBall = function(){
-	if(timeLeft===120 || timeLeft===50){
+	if(timeLeft===140 || timeLeft===60){
 		let ball = new Ball(Math.floor((Math.random()*740)),Math.floor((Math.random()*520)));
 		listBall.push(ball);
 	}
@@ -241,11 +249,6 @@ let deleteBall = function(x, y){
 			listBall.splice(i,1);
 		}
 	}
-};
-
-let create = function(){
-	createTree();
-	createBall();
 };
 
 let hitTree = function(){
@@ -263,10 +266,9 @@ let hitTree = function(){
 
 let hitElf = function(){
 	for(let i = 0; i<listElf.length ; i++){
-		if(((santa.x + 55 >= listElf[i].x) && (santa.y + 75 >= listElf[i].y)) && ((santa.x <= listElf[i].x + 25) && (santa.y <= listElf[i].y + 30))){
-			if(lastHit===null || Math.round(new Date()-lastHit > 2000)){
+		if(((santa.x + 55 >= listElf[i].x) && (santa.y + 75 >= listElf[i].y)) && ((santa.x <= listElf[i].x + 23) && (santa.y <= listElf[i].y + 30))){
+			if(lastHit===null || Math.round(new Date()-lastHit > 3000)){
 				lastHit = new Date();
-				console.log("Touché");
 				playElfLaugh();
 				santa.dropMoney();
 			}			
@@ -356,10 +358,14 @@ document.onkeydown = function (e) {
 let winGame = function(){
 	if(timeLeft>0 && santa.gift<=0 && santa.money>0 && !gameStopped){
 		gameStopped = true;
+		stopBackGroundMusic();
 		stopHohoho();
 		stopElfLaugh();
 		stopGrelot();
-		alert("You won with "+santa.money+" euros !");
+		ctx.font = "50px Verdana";
+		ctx.fillStyle = "#48A422";
+		ctx.fillText("You won with "+santa.money+" euros !", 100, 300);
+		playVictoryMusic();
 	}
 };
 
@@ -371,13 +377,16 @@ let stopGame = function(){
 		stopElfLaugh();
 		stopGrelot();
 		playLooseMusic();
-		alert("You loose with "+santa.gift+" gifts left...");
+		ctx.font = "50px Verdana";
+		ctx.fillStyle = "#C84E4E";
+		ctx.fillText("You loose with "+santa.gift+" gifts left !", 50, 300);
 	}
 };
 setInterval(decreaseTime,1000);
 setInterval(playBackGroundMusic,500);
 setInterval(deleteTree,500);
-setInterval(create,10000);
+setInterval(createTree,10000);
+setInterval(createBall,1000);
 setInterval(walkElf, 250);
 setInterval(draw,500);
 setInterval(hit,250);

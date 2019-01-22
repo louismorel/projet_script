@@ -10,6 +10,8 @@ PereNoel.prototype.dropGifts = function(tree){
 		this.gift -= 10;
 	else
 		this.gift -= 5;
+	if(this.gift<0)
+		this.gift = 0;
 };
 
 PereNoel.prototype.dropMoney = function(){
