@@ -1,0 +1,12 @@
+#cv {
+    position: relative;
+    margin-top: 1%;
+    padding: 2px;
+    border: groove;
+    border-width: 2px;
+    border-color: black;
+}
+
+body {
+    font-family: Impact;
+}

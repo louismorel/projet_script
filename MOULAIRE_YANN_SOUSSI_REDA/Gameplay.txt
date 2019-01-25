@@ -1,0 +1,30 @@
+Type de jeu : 
+
+Dans ce jeu, vous prendrez le rôle du père Noël dans une nuit du 25 décembre.
+
+Le but du jeu est de déposer vos 100 cadeaux aux pieds des différents sapins qui apparaissent au cours du jeu. Pour cela, vous avez un temps limité de 3 minutes et 30 secondes ainsi qu'un porte monnaie de 100 euros. Attention ! Des lutins apparaissent sur le plateau au cours de la partie et s'ils vous approchent, il vous voleront 5 euros.
+
+La partie se termine soit lorsque vous avez déposé les 100 cadeaux (victoire) soit lorsque le temps est écoulé ou que vous n'avez plus d'argent (défaite).
+
+Pour lancer le jeu, lancez le fichier game.html
+
+
+Règles :
+
+- Il s'agit d'un jeu en vue de dessus et le père Noël peut donc se déplacer dans 4 directions (haut, bas, gauche et droite).
+
+- Arrivé à une extrémité du plateau, le père Noël se téléporte à l'extrémité opposée (afin de faire un plateau qui boucle sur lui même).
+
+- Lorsqu'un lutin touche le père Noël, il réapparaît loin de lui (mais ne disparaît pas).
+
+- Il y a deux types de sapins :
+	> Le premier est "normal" et permet de poser 5 cadeaux, reste actif 20 secondes et fait apparaître un seul lutin. (Sapin décoré de bougies et d'un ange à son sommet)
+	> Le deuxième est "décoré" et permet de poser 10 cadeaux, reste actif 10 secondes et fait apparaître deux lutins. (Sapin décoré de noeuds papillons rouges et d'une étoile à son sommet)
+
+- Une boule de Noël apparaît au bout de 1:10 et 2:30 de jeu et permet, une fois ramassée, de geler les lutins sur place pendant 15 secondes (ils ne pourront même plus vous voler).
+
+- Les lutins font demi-tour lorsqu'il arrivent à une extrémité du plateau et changent de direction aléatoirement.
+
+- Lorsqu'il ne reste que 20 secondes de jeu au chronomètre, les lutins accélèrent (doublent leur vitesse) jusqu'à la fin de la partie.
+
+- Une fois la partie terminée, il vous est proposé soit de recommencer une partie soit de fermer la page du jeu.
